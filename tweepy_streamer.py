@@ -14,7 +14,7 @@ class TwitterStreamer():
     """
     def stream_tweet(self, fetched_tweets_filename, hash_tag_list):
         # this handles Twitter Authentication and the connection to the Twitter Streaming API.
-        listener = StdOutListener()
+        listener = StdOutListener(fetch_tweets_filename)
         auth = OAuthHandler(twitter_credentials.CONSUMER_KEY, twitter_credentials.CONSUMER_SECRET)# this is an object from auth class that obtain the data from credentials file
         auth.set_access_token(twitter_credentials.ACCESS_TOKEN, twitter_credentials.ACCESS_TOKEN_SECRET)# this is the method that we can access the token, obtain from the credentials file.
 
@@ -40,7 +40,7 @@ class StdOutListener(StreamListener):
         try:
             print(data)
             #write tweets into the file
-            with open(self, fetched_tweets_filename, 'a') as tf:
+            with open(self.fetched_tweets_filename, 'a') as tf:
                 tf.write(data)
             return True
         except BaseException as e:
