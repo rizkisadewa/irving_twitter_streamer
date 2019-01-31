@@ -62,6 +62,10 @@ class TwitterListener(StreamListener):
 
     # will be over riding the error
     def on_error(self, status):
+
+        if status == 420:
+            # Returning False on_data method in case rate limit occurs.
+            return False
         print(status)
 
 #create an object from StdOutListener
