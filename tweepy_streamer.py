@@ -6,6 +6,18 @@ from tweepy import Stream
 
 import twitter_credentials
 
+### TWITTER CLIENT ###
+class TwitterClient():
+    def __init__(self):
+        self.auth = TwitterAuthenticator().authenticate_twitter_app()
+        self.twitter_client = API(self.auth)
+
+    def get_user_timeline_tweets(self, num_tweets):
+        tweets = []
+        for tweet in Cursor(self.twitter_client.user_timeline).items(num_tweets):
+            tweets.append(tweet)
+        return tweets
+
 ## TWITTER AUTHENTICATOR ###
 ## the class that handle authentication
 class TwitterAuthenticator():
@@ -78,6 +90,10 @@ if __name__ == "__main__":
     #if you would like to have another format, just edit .json format into .txt or etc.
     fetch_tweets_filename = "tweets.json"
 
-    # make a twitter streamer object
-    twitter_streamer = TwitterStreamer()
-    twitter_streamer.stream_tweet(fetch_tweets_filename, hash_tag_list)
+    ## Make a twitter client object
+    twitter_client = TwitterClient()
+    print(twitter_client.get_user_timeline_tweets(1))
+
+    # # make a twitter streamer object
+    # twitter_streamer = TwitterStreamer()
+    # twitter_streamer.stream_tweet(fetch_tweets_filename, hash_tag_list)
