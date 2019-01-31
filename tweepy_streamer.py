@@ -8,13 +8,17 @@ import twitter_credentials
 
 ### TWITTER CLIENT ###
 class TwitterClient():
-    def __init__(self):
+
+    def __init__(self, twitter_user=None):
+        # twitter_user=None : if we do not input the parameter, then we will see our own timeline
+
         self.auth = TwitterAuthenticator().authenticate_twitter_app()
         self.twitter_client = API(self.auth)
+        self.twitter_user = twitter_user # declaration of the parameter twitter_user
 
     def get_user_timeline_tweets(self, num_tweets):
         tweets = []
-        for tweet in Cursor(self.twitter_client.user_timeline).items(num_tweets):
+        for tweet in Cursor(self.twitter_client.user_timeline, id=self.twitter_user).items(num_tweets):
             tweets.append(tweet)
         return tweets
 
@@ -91,7 +95,7 @@ if __name__ == "__main__":
     fetch_tweets_filename = "tweets.json"
 
     ## Make a twitter client object
-    twitter_client = TwitterClient()
+    twitter_client = TwitterClient('pycon')
     print(twitter_client.get_user_timeline_tweets(1))
 
     # # make a twitter streamer object
