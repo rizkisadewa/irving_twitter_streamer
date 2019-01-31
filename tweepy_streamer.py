@@ -1,11 +1,26 @@
+from tweepy import API
+from tweepy import Cursor
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 
 import twitter_credentials
 
-# class who responsible for tweet
+## TWITTER AUTHENTICATOR ###
+## the class that handle authentication
+class TwitterAuthenticator():
+
+    def authenticate_twitter_app(self):
+        auth = OAuthHandler(twitter_credentials.CONSUMER_KEY, twitter_credentials.CONSUMER_SECRET)# this is an object from auth class that obtain the data from credentials file
+        auth.set_access_token(twitter_credentials.ACCESS_TOKEN, twitter_credentials.ACCESS_TOKEN_SECRET)# this is the method that we can access the token, obtain from the credentials file.
+        return auth
+
+
+# TWITTER STREAMMER : class who responsible for tweet
 class TwitterStreamer():
+
+    def __init__(self):
+        self.twitter_authenticator = TwitterAuthenticator()
 
     """
     Class for streaming and processing live tweets.
@@ -14,10 +29,8 @@ class TwitterStreamer():
     """
     def stream_tweet(self, fetched_tweets_filename, hash_tag_list):
         # this handles Twitter Authentication and the connection to the Twitter Streaming API.
-        listener = StdOutListener(fetch_tweets_filename)
-        auth = OAuthHandler(twitter_credentials.CONSUMER_KEY, twitter_credentials.CONSUMER_SECRET)# this is an object from auth class that obtain the data from credentials file
-        auth.set_access_token(twitter_credentials.ACCESS_TOKEN, twitter_credentials.ACCESS_TOKEN_SECRET)# this is the method that we can access the token, obtain from the credentials file.
-
+        listener = TwitterListener(fetch_tweets_filename)
+        auth = self.twitter_authenticator.authenticate_twitter_app()
         stream = Stream(auth, listener)
 
         #dealling with the filter use a paramte from this function
@@ -25,8 +38,8 @@ class TwitterStreamer():
 
 
 
-# class allow to create tweets
-class StdOutListener(StreamListener):
+# TWITTER STREAM LISTENER : class allow to create tweets
+class TwitterListener(StreamListener):
     """
     This is a basic listener class that just prints received tweets to stdout.
     """
