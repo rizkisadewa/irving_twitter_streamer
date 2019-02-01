@@ -22,6 +22,20 @@ class TwitterClient():
             tweets.append(tweet)
         return tweets
 
+    def get_friend_list(self, num_friends):
+        friend_list = []
+        for friend in Cursor(self.twitter_client.friends, id=self.twitter_user).items(num_friends):
+            friend_list.append(friend)
+        return friend_list
+
+    def get_home_timeline_tweets(self, num_tweets):
+        home_timeline_tweets = []
+        for tweet in Cursor(self.twitter_client.home_timeline, id=self.twitter_user).items(num_tweets):
+            home_timeline.append(tweet)
+        return home_timeline_tweets
+
+    ## we can view the lst of the scope in twitter in this link http://docs.tweepy.org/en/v3.5.0/api.html for references 
+
 ## TWITTER AUTHENTICATOR ###
 ## the class that handle authentication
 class TwitterAuthenticator():
@@ -95,7 +109,7 @@ if __name__ == "__main__":
     fetch_tweets_filename = "tweets.json"
 
     ## Make a twitter client object
-    twitter_client = TwitterClient('pycon')
+    twitter_client = TwitterClient('pycon') # we can input a parameter 'pycon' to see pycon timeline, otherwise we will see our own timeline
     print(twitter_client.get_user_timeline_tweets(1))
 
     # # make a twitter streamer object
