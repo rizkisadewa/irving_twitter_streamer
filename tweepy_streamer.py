@@ -5,6 +5,10 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 
 import twitter_credentials
+import numpy as np #library for process the number, math or etc.
+import pandas as pd #library for analyze
+
+
 
 ### TWITTER CLIENT ###
 class TwitterClient():
@@ -15,6 +19,9 @@ class TwitterClient():
         self.auth = TwitterAuthenticator().authenticate_twitter_app()
         self.twitter_client = API(self.auth)
         self.twitter_user = twitter_user # declaration of the parameter twitter_user
+
+    def get_twitter_client_api(self):
+        return self.twitter_client
 
     def get_user_timeline_tweets(self, num_tweets):
         tweets = []
@@ -34,7 +41,7 @@ class TwitterClient():
             home_timeline.append(tweet)
         return home_timeline_tweets
 
-    ## we can view the lst of the scope in twitter in this link http://docs.tweepy.org/en/v3.5.0/api.html for references 
+    ## we can view the lst of the scope in twitter in this link http://docs.tweepy.org/en/v3.5.0/api.html for references
 
 ## TWITTER AUTHENTICATOR ###
 ## the class that handle authentication
@@ -98,20 +105,20 @@ class TwitterListener(StreamListener):
             return False
         print(status)
 
+class TwitterAnalyzer():
+    """
+    Functionality for analyzing and categorizing content from tweets.
+    """
+    pass
+
+
 #create an object from StdOutListener
 if __name__ == "__main__":
 
-    #create a hashtag
-    hash_tag_list = ["joko widodo", "Prabowo Subianto", "Susi Puji Astuti"]
+    twitter_client = TwitterClient()
+    api = twitter_client.get_twitter_client_api()
 
-    #create the variable to make a file so that will be given the name, for below only for json format
-    #if you would like to have another format, just edit .json format into .txt or etc.
-    fetch_tweets_filename = "tweets.json"
+    tweets = api.user_timeline(screen_name="realDonaldTrump", count=20)
+    # user_timeline above is not the function that we declared, this is a function from Twitter API
 
-    ## Make a twitter client object
-    twitter_client = TwitterClient('pycon') # we can input a parameter 'pycon' to see pycon timeline, otherwise we will see our own timeline
-    print(twitter_client.get_user_timeline_tweets(1))
-
-    # # make a twitter streamer object
-    # twitter_streamer = TwitterStreamer()
-    # twitter_streamer.stream_tweet(fetch_tweets_filename, hash_tag_list)
+    
