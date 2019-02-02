@@ -109,16 +109,36 @@ class TwitterAnalyzer():
     """
     Functionality for analyzing and categorizing content from tweets.
     """
-    pass
+    def tweets_to_data_frame(self, tweets):
+        df = pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['Tweets'])
+        # DataFrame() is a function built in pandas to make a Data Frame.
+        # tweet.text for tweet in tweets we loop all the tweets and set as a data.
 
+        df['id'] = np.array([tweet.id for tweet in tweets]) # make another column for an id of the tweets
+        df['len'] = np.array([len(tweet.text) for tweet in tweets]) # make another column for long of tweets
+        df['date'] = np.array([tweet.created_at for tweet in tweets]) # make another column for tweets date of creation
+        df['source'] = np.array([tweet.source for tweet in tweets]) # make another column for the kind of device source tweets made
+        df['likes'] = np.array([tweet.favorite_count for tweet in tweets]) # make another column for like of the tweets
+        df['retweets'] = np.array([tweet.retweet_count for tweet in tweets]) # make another column for tweets date of creation
+
+        return df
 
 #create an object from StdOutListener
 if __name__ == "__main__":
 
     twitter_client = TwitterClient()
+    tweet_analyzer = TwitterAnalyzer()
+
     api = twitter_client.get_twitter_client_api()
 
     tweets = api.user_timeline(screen_name="realDonaldTrump", count=20)
     # user_timeline above is not the function that we declared, this is a function from Twitter API
 
-    
+
+    # # if we would like to know what the data will be shorted by certain category such as id and retweet count, below the function
+    # print(dir(tweets[0]))
+    # print(tweets[0].id)
+    # print(tweets[0].retweet_count)
+
+    df = tweet_analyzer.tweets_to_data_frame(tweets)
+    print(df.head(10))
