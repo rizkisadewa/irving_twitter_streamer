@@ -7,7 +7,7 @@ from tweepy import Stream
 import twitter_credentials
 import numpy as np #library for process the number, math or etc.
 import pandas as pd #library for analyze
-
+import matplotlib.pyplot as plt #library for print the grafik of the data
 
 
 ### TWITTER CLIENT ###
@@ -110,7 +110,7 @@ class TwitterAnalyzer():
     Functionality for analyzing and categorizing content from tweets.
     """
     def tweets_to_data_frame(self, tweets):
-        df = pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['Tweets'])
+        df = pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['tweets'])
         # DataFrame() is a function built in pandas to make a Data Frame.
         # tweet.text for tweet in tweets we loop all the tweets and set as a data.
 
@@ -141,4 +141,23 @@ if __name__ == "__main__":
     # print(tweets[0].retweet_count)
 
     df = tweet_analyzer.tweets_to_data_frame(tweets)
-    print(df.head(10))
+    # print(df.head(10))
+
+    # Get average length over all tweets
+    print("Sample : %s" % np.mean(df['len'])) #mean() is the function mean from numpy
+
+    # Get the number of likes for the most liked tweet.
+    print("The number of likes for the most liked tweet : %s" % np.max(df['likes']))
+
+    # Get the number of retweets for the most retweeted tweet.
+    print("The number of retweets for the most retweeted tweet : %s" % np.max(df['retweets']))
+
+    # # Option 1 : make a plot in Time Series for number of likes and the date
+    # time_likes = pd.Series(data=df['likes'].values, index=df['date']) #y axes is by likes, z axes is by the date
+    # time_likes.plot(figsize=(16, 4), color='r') #picture in 16 inc and 4 inc with color red
+    # plt.show()
+
+    # Option 2 : make a plot in Time Series for number of retweets and the date
+    time_retweets = pd.Series(data=df['retweets'].values, index=df['date']) #y axes is by retweets, z axes is by the date
+    time_retweets.plot(figsize=(16, 4), color='r') #picture in 16 inc and 4 inc with color red
+    plt.show()
