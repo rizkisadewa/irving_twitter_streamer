@@ -153,11 +153,20 @@ if __name__ == "__main__":
     print("The number of retweets for the most retweeted tweet : %s" % np.max(df['retweets']))
 
     # # Option 1 : make a plot in Time Series for number of likes and the date
-    # time_likes = pd.Series(data=df['likes'].values, index=df['date']) #y axes is by likes, z axes is by the date
+    # time_likes = pd.Series(data=df['likes'].values, index=df['date']) #y axes is by likes, x axes is by the date
     # time_likes.plot(figsize=(16, 4), color='r') #picture in 16 inc and 4 inc with color red
     # plt.show()
 
-    # Option 2 : make a plot in Time Series for number of retweets and the date
-    time_retweets = pd.Series(data=df['retweets'].values, index=df['date']) #y axes is by retweets, z axes is by the date
-    time_retweets.plot(figsize=(16, 4), color='r') #picture in 16 inc and 4 inc with color red
-    plt.show()
+    # # Option 2 : make a plot in Time Series for number of retweets and the date
+    # time_retweets = pd.Series(data=df['retweets'].values, index=df['date']) #y axes is by retweets, x axes is by the date
+    # time_retweets.plot(figsize=(16, 4), color='r') #picture in 16 inc and 4 inc with color red
+    # plt.show()
+
+    # Option 3 : make a plot in Time Series for number of retweets, number of likes and the date
+    time_likes = pd.Series(data=df['likes'].values, index=df['date']) #y axes is by likes, x axes is by the date
+    time_likes.plot(figsize=(16, 4), label='likes', legend=True) #picture in 16 inc and 4 inc with color red
+
+    time_retweets = pd.Series(data=df['retweets'].values, index=df['date']) #y axes is by retweets, x axes is by the date
+    time_retweets.plot(figsize=(16, 4), label='retweets', legend=True) #picture in 16 inc and 4 inc with color red
+
+    plt.show() #show the graphic
