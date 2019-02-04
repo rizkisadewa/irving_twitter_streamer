@@ -4,9 +4,12 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 
+from textblob import TextBlob # for analyze tool of sentiment
+
 import twitter_credentials
 import numpy as np #library for process the number, math or etc.
 import pandas as pd #library for analyze
+import re #regular expression, to clear any hyperlink or any tag so that has a format in text only
 import matplotlib.pyplot as plt #library for print the grafik of the data
 
 
@@ -109,6 +112,25 @@ class TwitterAnalyzer():
     """
     Functionality for analyzing and categorizing content from tweets.
     """
+    def clean_tweet(self, tweet):
+        return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())
+
+    def analyze_sentiment(self, tweet):
+        analysis = TextBlob(self.clean_tweet(tweet))
+
+        """
+        sentiment is an enginge for analyze, while polarity is a function in TextBlob to return whether positive or negative or netral
+        of the sentiment.
+        """
+
+        if analysis.sentiment.polarity > 0:
+            return 1
+        elif analysis.sentiment.polarity == 0:
+            return 0
+        else:
+            return -1
+
+
     def tweets_to_data_frame(self, tweets):
         df = pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['tweets'])
         # DataFrame() is a function built in pandas to make a Data Frame.
@@ -143,15 +165,38 @@ if __name__ == "__main__":
     df = tweet_analyzer.tweets_to_data_frame(tweets)
     # print(df.head(10))
 
-    # Get average length over all tweets
-    print("Sample : %s" % np.mean(df['len'])) #mean() is the function mean from numpy
 
-    # Get the number of likes for the most liked tweet.
-    print("The number of likes for the most liked tweet : %s" % np.max(df['likes']))
+    """
+    Sentiment Analysis
+    """
 
-    # Get the number of retweets for the most retweeted tweet.
-    print("The number of retweets for the most retweeted tweet : %s" % np.max(df['retweets']))
+    df['sentiment'] = np.array([tweet_analyzer.analyze_sentiment(tweet) for tweet in df['tweets']]) # make another column for sentiment of the tweets
+    print(df.head(10)) #print into the screen for 10 of tweets 
 
+    """
+    / Sentiment Analysis
+    """
+
+    """
+    Print the data
+    """
+
+    # # Get average length over all tweets
+    # print("Sample : %s" % np.mean(df['len'])) #mean() is the function mean from numpy
+    #
+    # # Get the number of likes for the most liked tweet.
+    # print("The number of likes for the most liked tweet : %s" % np.max(df['likes']))
+    #
+    # # Get the number of retweets for the most retweeted tweet.
+    # print("The number of retweets for the most retweeted tweet : %s" % np.max(df['retweets']))
+
+    """
+    / Print the data
+    """
+
+    """
+    Visualization
+    """
     # # Option 1 : make a plot in Time Series for number of likes and the date
     # time_likes = pd.Series(data=df['likes'].values, index=df['date']) #y axes is by likes, x axes is by the date
     # time_likes.plot(figsize=(16, 4), color='r') #picture in 16 inc and 4 inc with color red
@@ -162,11 +207,15 @@ if __name__ == "__main__":
     # time_retweets.plot(figsize=(16, 4), color='r') #picture in 16 inc and 4 inc with color red
     # plt.show()
 
-    # Option 3 : make a plot in Time Series for number of retweets, number of likes and the date
-    time_likes = pd.Series(data=df['likes'].values, index=df['date']) #y axes is by likes, x axes is by the date
-    time_likes.plot(figsize=(16, 4), label='likes', legend=True) #picture in 16 inc and 4 inc with color red
+    # # Option 3 : make a plot in Time Series for number of retweets, number of likes and the date
+    # time_likes = pd.Series(data=df['likes'].values, index=df['date']) #y axes is by likes, x axes is by the date
+    # time_likes.plot(figsize=(16, 4), label='likes', legend=True) #picture in 16 inc and 4 inc with color red
+    #
+    # time_retweets = pd.Series(data=df['retweets'].values, index=df['date']) #y axes is by retweets, x axes is by the date
+    # time_retweets.plot(figsize=(16, 4), label='retweets', legend=True) #picture in 16 inc and 4 inc with color red
+    #
+    # plt.show() #show the graphic
 
-    time_retweets = pd.Series(data=df['retweets'].values, index=df['date']) #y axes is by retweets, x axes is by the date
-    time_retweets.plot(figsize=(16, 4), label='retweets', legend=True) #picture in 16 inc and 4 inc with color red
-
-    plt.show() #show the graphic
+    """
+    / Visualization
+    """
